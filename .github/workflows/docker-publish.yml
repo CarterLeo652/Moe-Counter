@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
     # Optional: trigger only on specific file changes
     # paths:
     #   - 'Dockerfile'
