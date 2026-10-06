@@ -5,11 +5,13 @@ const path = require('path')
 const mimeType = require('mime-types')
 const sizeOf = require('image-size')
 const { toFixed } = require('./index')
+const { hasAnimatedFrames } = require('./animation')
 
 const themePath = path.resolve(__dirname, '../assets/theme')
 const imgExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
 
 const themeList = {}
+const animatedThemes = new Set()
 
 fs.readdirSync(themePath).forEach(theme => {
   const currentThemePath = path.resolve(themePath, theme)
@@ -24,19 +26,21 @@ fs.readdirSync(themePath).forEach(theme => {
 
     const imgPath = path.resolve(currentThemePath, img)
     const char = path.parse(img).name
-    const { width, height } = sizeOf(imgPath)
+    const buffer = fs.readFileSync(imgPath)
+    const { width, height } = sizeOf(buffer)
+    if (!animatedThemes.has(theme) && hasAnimatedFrames(buffer)) animatedThemes.add(theme)
 
     themeList[theme][char] = {
       width,
       height,
-      data: convertToDatauri(imgPath)
+      data: convertToDatauri(imgPath, buffer)
     }
   })
 })
 
-function convertToDatauri(path) {
+function convertToDatauri(path, buffer) {
   const mime = mimeType.lookup(path)
-  const base64 = fs.readFileSync(path).toString('base64')
+  const base64 = buffer.toString('base64')
 
   return `data:${mime};base64,${base64}`
 }
@@ -127,7 +131,32 @@ function getCountImage(params) {
 `
 }
 
+// A theme may match several rules at once
+const themeGroupRules = [
+  [/(num$|^nixietube-|^(normal|sketch)-[12]$|^booru-(mof|rfck)$)/, 'numeric'],
+  [/^(booru-|moebooru|gelbooru|rule34|e621|shimmie2)/, 'imageboard'],
+  [/^original-/, 'original'],
+]
+
+// Only the ids travel to the client; the visible names come from the locale files
+const themeGroups = [
+  { id: 'imageboard' },
+  { id: 'illustration' },
+  { id: 'numeric' },
+  { id: 'original' },
+  { id: 'animated' },
+]
+
+function getThemeGroups(theme) {
+  const groups = themeGroupRules.filter(([pattern]) => pattern.test(theme)).map(([, group]) => group)
+  if (!groups.length) groups.push('illustration')
+  if (animatedThemes.has(theme)) groups.push('animated')
+  return groups
+}
+
 module.exports = {
   themeList,
+  themeGroups,
+  getThemeGroups,
   getCountImage
 }

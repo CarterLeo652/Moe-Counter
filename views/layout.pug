@@ -1,0 +1,52 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    block meta
+    meta(name='theme-color', content='#faf8f5')
+    link(rel='icon', type='image/png', href=`${site}/favicon.png`)
+    script.
+      try {
+        const appearance = localStorage.getItem('moe-counter-appearance');
+        if (appearance === 'dark' || appearance === 'light') document.documentElement.dataset.appearance = appearance;
+      } catch {}
+    link(rel='stylesheet', href=`${site}/style.css`)
+    //- No build step: the browser loads ESM directly and the import map resolves bare specifiers
+    script(type='importmap').
+      {
+        "imports": {
+          "preact": "https://unpkg.com/preact@10.29.8/dist/preact.module.js",
+          "preact/hooks": "https://unpkg.com/preact@10.29.8/hooks/dist/hooks.module.js",
+          "htm": "https://unpkg.com/htm@3.1.1/dist/htm.module.js"
+        }
+      }
+    if ga_id
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      script(async, src=`https://www.googletagmanager.com/gtag/js?id=${ga_id}`)
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', '#{ga_id}');
+
+      function _evt_push(type, category, label) {
+        gtag('event', type, {
+          'event_category' : category,
+          'event_label' : label
+        });
+      }
+
+    script(type='application/json', id='global-data') !{globalData}
+
+  body
+    a.skip-link(href='#main') Skip to content
+
+    div#app
+
+    noscript
+      block noscript
+
+    block scripts
+    script(type='module', src=`${site}/app/main.js`)

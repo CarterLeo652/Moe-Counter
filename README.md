@@ -53,7 +53,15 @@ DB_TYPE=sqlite
 # DB_URL=mongodb://127.0.0.1:27017
 
 # 数据库写入间隔（秒；0 表示实时写入）
-DB_INTERVAL=60
+DB_INTERVAL=10
+
+# SQLite 文件路径（可选）
+# DB_PATH=./data/count.db
+
+# 统计数据保留时长
+STATS_DETAIL_HOURS=48
+STATS_MINUTE_DAYS=7
+STATS_HOUR_DAYS=90
 
 # 日志级别：debug、info、warn、error 或 none
 LOG_LEVEL=debug
