@@ -32,6 +32,7 @@ docker compose up -d --build
 git clone https://github.com/CarterLeo652/Moe-Counter.git
 cd Moe-Counter
 pnpm install
+pnpm build
 pnpm start
 ```
 
