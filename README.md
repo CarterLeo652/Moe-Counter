@@ -243,6 +243,10 @@
 
 ![yousa-ling](https://count.getloli.com/@demo?theme=yousa-ling)
 
+##### yuki-catboy
+
+![yuki-catboy](https://count.getloli.com/@demo?theme=yuki-catboy)
+
 </details>
 
 ## Demo
