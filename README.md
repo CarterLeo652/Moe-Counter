@@ -2,6 +2,8 @@
 
 一个可自托管、支持多种主题的计数器服务。
 
+新增 `yuki-catboy` 像素主题，使用时传入 `?theme=yuki-catboy`。
+
 ## 使用 Docker
 
 镜像同时支持 `linux/amd64` 和 `linux/arm64`。Docker 会按宿主机架构自动拉取相应镜像。
